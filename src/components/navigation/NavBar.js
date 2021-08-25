@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {useState} from 'react';
 import {withStyles} from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -26,63 +26,57 @@ const styles = theme => ({
     toolbarMargin: theme.mixins.toolbar
 });
 
-const TeamsToolbar = withStyles(styles)(
-    class extends Component {
-        static defaultProps = {
-            MenuItems: () => (
-                <>
-                    <MenuItem component={Link} to="/teams">
-                        Teams
-                    </MenuItem>
-                    <MenuItem component={Link} to="/players">
-                        Players
-                    </MenuItem>
-                </>
-            )
-        };
+const MenuItems = () => {
+    return (
+        <>
+            <MenuItem component={Link} to="/teams">
+                Teams
+            </MenuItem>
+            <MenuItem component={Link} to="/players">
+                Players
+            </MenuItem>
+        </>
+    );
+}
 
-        state = {anchor: null};
+const TeamsToolbar = withStyles(styles)(({classes, title}) => {
+    const [state, setState] = useState({anchor: null});
 
-        closeMenu = () => this.setState({anchor: null});
+    const closeMenu = () => setState({anchor: null});
 
-        render() {
-            const {classes, title, MenuItems} = this.props;
-
-            return (
-                <Fragment>
-                    <AppBar position="fixed">
-                        <Toolbar>
-                            <IconButton
-                                className={classes.menuButton}
-                                color="inherit"
-                                aria-label="Menu"
-                                onClick={e =>
-                                    this.setState({anchor: e.currentTarget})
-                                }
-                            >
-                                <MenuIcon/>
-                            </IconButton>
-                            <Menu
-                                anchorEl={this.state.anchor}
-                                open={Boolean(this.state.anchor)}
-                                onClose={this.closeMenu}>
-                                <MenuItems/>
-                            </Menu>
-                            <Typography
-                                variant="h5"
-                                color="inherit"
-                                className={classes.flex}
-                            >
-                                {title}
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
-                    <div className={classes.toolbarMargin}/>
-                </Fragment>
-            );
-        }
-    }
-);
+    return (
+        <>
+            <AppBar position="fixed">
+                <Toolbar>
+                    <IconButton
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="Menu"
+                        onClick={e =>
+                            setState({anchor: e.currentTarget})
+                        }
+                    >
+                        <MenuIcon/>
+                    </IconButton>
+                    <Menu
+                        anchorEl={state.anchor}
+                        open={Boolean(state.anchor)}
+                        onClose={closeMenu}>
+                        <MenuItems/>
+                    </Menu>
+                    <Typography
+                        variant="h5"
+                        color="inherit"
+                        className={classes.flex}
+                    >
+                        {title}
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+            <div className={classes.toolbarMargin}/>
+        </>
+    );
+});
 
 export const NavBar = withStyles(styles)(({classes}) => {
 
