@@ -3,6 +3,7 @@ import {NavBar} from "./navigation/NavBar";
 
 function App() {
   return (
+      // <TestHook />
       <NavBar />
   );
 }

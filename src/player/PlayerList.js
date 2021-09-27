@@ -7,12 +7,13 @@ const styles = theme => ({});
 
 const PlayerList = withStyles(styles)(({classes, ...props}) => {
     const {onPlayerSelect} = props;
-    const {teamsByReference, players} = useContext(PlayerListContext);
+    const {teams, players} = useContext(PlayerListContext);
 
-    const getTeamByReference = (team_reference) => {
+    const getTeam = (team_reference) => {
         let team = null;
         if (team_reference) {
-            team = teamsByReference.get(it.team_reference);
+            // team = teamsByReference.get(it.team_reference);
+            team = teams.find(team => team.reference === team_reference);
         }
         console.log("ref: ", team_reference, " team: ", team);
         return (team ? team.name : 'No teamplayer yet');
@@ -30,7 +31,7 @@ const PlayerList = withStyles(styles)(({classes, ...props}) => {
                 >
                     <ListItemText
                         primary={`${it.firstName} ${it.lastName}`}
-                        secondary={getTeamByReference(it.team_reference)}
+                        secondary={getTeam(it.team_reference)}
                         primaryTypographyProps={{
                             color: it.selected ? 'primary' : undefined
                         }}

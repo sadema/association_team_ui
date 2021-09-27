@@ -6,7 +6,7 @@ export const playerWebClientFetch = () => {
                 reference: it.id,
                 firstName: it.value.firstName,
                 lastName: it.value.lastName,
-                team_reference: it.value.team_reference,
+                team_reference: it.value.team_reference || '0',
                 role: it.value.role,
                 itemSelected: false
             });
@@ -17,7 +17,7 @@ export const playerWebClientFetch = () => {
     const fetchPlayers = async () => {
         const response = await fetch('/querydb/teams/_design/team/_view/all-players');
         const data = await response.json();
-        console.log("rows: ", data.rows);
+        // console.log("rows: ", data.rows);
         const playerList = buildPlayerList(data.rows);
         return playerList;
     }

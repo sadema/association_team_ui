@@ -20,7 +20,7 @@ const PlayerPage = withStyles(styles)(({classes}) => {
     }
 
     return (
-        <PlayerListContext.Provider value={{teamsByReference: useTeamData(), players: usePlayerData()}}>
+        <PlayerListContext.Provider value={{teams: useTeamData(), players: usePlayerData()}}>
             <div className={classes.root}>
                 <Grid container spacing={2}>
                     <Grid key={'left'} item xs={12} sm={4} md={3}>

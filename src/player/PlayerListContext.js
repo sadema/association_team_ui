@@ -1,4 +1,4 @@
 import React from "react";
 
-export const PlayerListContext = React.createContext({teamsByReference: new Map(), players: []});
+export const PlayerListContext = React.createContext({teams: [], players: []});
 
