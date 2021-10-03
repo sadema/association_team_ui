@@ -11,6 +11,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import HomePage from "../home/HomePage";
 import TeamPage from "../team/TeamPage";
 import PlayerPage from "../player/PlayerPage";
+import {useTeamData} from "../team/useTeamData";
+import {usePlayerData} from "../player/usePlayerData";
+import {PlayerListContext} from "../player/PlayerListContext";
 
 const styles = theme => ({
     root: {
@@ -83,34 +86,36 @@ export const NavBar = withStyles(styles)(({classes}) => {
     return (
         <Router>
             <div className={classes.root}>
-                <Route
-                    exact
-                    path="/"
-                    render={() => (
-                        <>
-                            <TeamsToolbar title="Managing Teams"/>
-                            <HomePage/>
-                        </>
-                    )}
-                />
-                <Route
-                    path="/teams"
-                    render={() => (
-                        <>
-                            <TeamsToolbar title="Managing Teams"/>
-                            <TeamPage/>
-                        </>
-                    )}
-                />
-                <Route
-                    path="/players"
-                    render={() => (
-                        <>
-                            <TeamsToolbar title="Managing Players"/>
-                            <PlayerPage/>
-                        </>
-                    )}
-                />
+                <PlayerListContext.Provider value={{teams: useTeamData(), playerState: usePlayerData()}}>
+                    <Route
+                        exact
+                        path="/"
+                        render={() => (
+                            <>
+                                <TeamsToolbar title="Managing Teams"/>
+                                <HomePage/>
+                            </>
+                        )}
+                    />
+                    <Route
+                        path="/teams"
+                        render={() => (
+                            <>
+                                <TeamsToolbar title="Managing Teams"/>
+                                <TeamPage/>
+                            </>
+                        )}
+                    />
+                    <Route
+                        path="/players"
+                        render={() => (
+                            <>
+                                <TeamsToolbar title="Managing Players"/>
+                                <PlayerPage/>
+                            </>
+                        )}
+                    />
+                </PlayerListContext.Provider>
             </div>
         </Router>
     )

@@ -11,5 +11,5 @@ export const usePlayerData = () => {
                 setPlayers(list);
             });
     }, []);
-    return players;
+    return [players, setPlayers];
 };

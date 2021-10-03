@@ -1,11 +1,9 @@
 import {withStyles} from "@material-ui/core/styles";
 import {Grid} from "@material-ui/core";
 import PlayerList from "./PlayerList";
+import {useContext, useEffect, useState} from "react";
 import {PlayerListContext} from "./PlayerListContext";
-import {usePlayerData} from "./usePlayerData";
-import {useTeamData} from "../team/useTeamData";
 import {PlayerForm} from "./PlayerForm";
-import {useState} from "react";
 
 const styles = theme => ({
     root: {
@@ -14,24 +12,40 @@ const styles = theme => ({
 })
 
 const PlayerPage = withStyles(styles)(({classes}) => {
-    const [selectedPlayerIndex, setPlayerIndex] = useState(0)
-    const onPlayerSelect = (index) => {
-        setPlayerIndex(index);
-    }
+    const {playerState} = useContext(PlayerListContext);
+
+    const [players, setPlayers] = playerState;
+
+    const [playerIndex, setPlayerIndex] = useState(0);
+
+    const [player, setPlayer] = useState(null);
+
+    useEffect(() => {
+        if (players) {
+            const player = players[playerIndex];
+            setPlayer(player);
+        }
+    }, [players]);
+
+    useEffect(() => {
+        if (players.length > 0) {
+           setPlayer(players[playerIndex]);
+        }
+    }, [playerIndex]);
 
     return (
-        <PlayerListContext.Provider value={{teams: useTeamData(), players: usePlayerData()}}>
+        // <PlayerListContext.Provider value={{teams: useTeamData(), players: usePlayerData()}}>
             <div className={classes.root}>
                 <Grid container spacing={2}>
                     <Grid key={'left'} item xs={12} sm={4} md={3}>
-                        <PlayerList onPlayerSelect={onPlayerSelect}/>
+                        <PlayerList selectedPlayer={player} onPlayerSelect={index => setPlayerIndex(index)}/>
                     </Grid>
                     <Grid key={'right'} item xs={12} sm={8} md={9}>
-                        <PlayerForm selectedPlayerIndex={selectedPlayerIndex}/>
+                        <PlayerForm selectedPlayer={player} playerIndex={playerIndex}/>
                     </Grid>
                 </Grid>
             </div>
-        </PlayerListContext.Provider>
+        // </PlayerListContext.Provider>
     );
 });
 

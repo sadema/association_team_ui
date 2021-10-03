@@ -6,38 +6,38 @@ import {List, ListItem, ListItemText} from "@material-ui/core";
 const styles = theme => ({});
 
 const PlayerList = withStyles(styles)(({classes, ...props}) => {
-    const {onPlayerSelect} = props;
-    const {teams, players} = useContext(PlayerListContext);
+    const {selectedPlayer, onPlayerSelect} = props;
+    const {teams, playerState} = useContext(PlayerListContext);
 
-    const getTeam = (team_reference) => {
+    const [players, setPlayers] = playerState;
+
+    const getTeam = (teamReference) => {
         let team = null;
-        if (team_reference) {
-            // team = teamsByReference.get(it.team_reference);
-            team = teams.find(team => team.reference === team_reference);
+        if (teamReference) {
+            team = teams.find(team => team.reference === teamReference);
         }
-        console.log("ref: ", team_reference, " team: ", team);
+        console.log("ref: ", teamReference, " team: ", team);
         return (team ? team.name : 'No teamplayer yet');
     }
 
     return (
         <List>
-            {players.map((it, index) => (
+            {selectedPlayer && players && players.map((it, index) => (
                 <ListItem
                     key={index}
                     button
                     dense
-                    selected={it.selected}
+                    selected={it.reference === selectedPlayer.reference}
                     onClick={() => onPlayerSelect(index)}
                 >
                     <ListItemText
                         primary={`${it.firstName} ${it.lastName}`}
-                        secondary={getTeam(it.team_reference)}
+                        secondary={getTeam(it.teamReference)}
                         primaryTypographyProps={{
                             color: it.selected ? 'primary' : undefined
                         }}
                     />
                 </ListItem>
-                // <div key={index}>Player: {it.firstName}</div>
             ))}
         </List>
     );

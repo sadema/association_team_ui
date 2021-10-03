@@ -6,8 +6,8 @@ export const playerWebClientFetch = () => {
                 reference: it.id,
                 firstName: it.value.firstName,
                 lastName: it.value.lastName,
-                team_reference: it.value.team_reference || '0',
-                role: it.value.role,
+                teamReference: it.value.team_reference || '0',
+                playerRole: it.value.role,
                 itemSelected: false
             });
             return playerList;

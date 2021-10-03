@@ -20,26 +20,7 @@ export const TeamSelect = ({teamReference, onChange}) => {
                 return newTeamSelects;
             }, [{id: '0', label: 'None', selected: true}]));
         }
-    }, [teams]);
-
-    // useEffect(() => {
-    //     console.log('teamReference: ', teamReference);
-    //     if (teamOptions) {
-    //         const newTeamOptions = [...teamOptions]
-    //         // newTeamOptions.find(team => team.selected);
-    //         // if (team && team.selected) {
-    //         //     team.selected = false;
-    //         // }
-    //         const newSelected = newTeamOptions.find(team => team.id === teamReference);
-    //         if (newSelected)
-    //             newSelected.selected = true;
-    //         setTeamOptions(newTeamOptions);
-    //     }
-    // }, [teamReference]);
-
-    // const team = teamOptions?.find(team => team.selected) || {
-    //     id: '0', selected: true
-    // };
+    }, [teams, teamReference]);
 
     return (
         <>
