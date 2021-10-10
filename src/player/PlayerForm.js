@@ -1,11 +1,12 @@
 import {withStyles} from "@material-ui/core/styles";
 import {useContext, useEffect, useState} from "react";
 import {CircularProgress, Grid} from "@material-ui/core";
-import {PlayerUpdateActions} from "./PlayerUpdateActions";
+import {FormUpdateActions} from "../component/FormUpdateActions";
 import {GenericInputField} from "../component/GenericInputField";
 import {TeamSelect} from "../team/TeamSelect";
-import {Roles} from "./Roles";
+import {savePlayer} from "./savePlayer";
 import {PlayerListContext} from "./PlayerListContext";
+import {PlayerRole} from "./PlayerRole";
 
 const styles = theme => ({
     container: {
@@ -14,10 +15,8 @@ const styles = theme => ({
 });
 
 export const PlayerForm = withStyles(styles)(({classes, ...props}) => {
-    const {selectedPlayer, playerIndex} = props;
+    const {selectedPlayer, playerIndex, onDialogClose} = props;
     const {playerState} = useContext(PlayerListContext);
-
-    const [players, setPlayers] = playerState;
 
     const [inputs, setInputs] = useState(null);
 
@@ -45,13 +44,12 @@ export const PlayerForm = withStyles(styles)(({classes, ...props}) => {
     }
 
     const onUndo = () => {
-        console.log("onUndo");
         const newInputs = [...inputs];
         newInputs[0] = {...inputs[0], value: selectedPlayer.firstName};
         newInputs[1] = {...inputs[1], value: selectedPlayer.lastName};
         setInputs(newInputs);
         setTeamReference(selectedPlayer.teamReference);
-        setPlayerRole(selectedPlayer.playerRole);
+        setPlayerRole(selectedPlayer.playerRole || 'UNKNOWN');
     }
 
     const haveMemberPropertiesChanged = inputs => {
@@ -59,37 +57,14 @@ export const PlayerForm = withStyles(styles)(({classes, ...props}) => {
             selectedPlayer.lastName !== inputs[1].value;
     }
 
-    const updatePlayerData = async (url, body) => {
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        }).catch((err) => {
-            console.warn(err);
-        });
-        return response.status;
-    };
-
     const onSave = () => {
         const newPlayer = {...selectedPlayer};
         newPlayer.teamReference = teamReference;
         newPlayer.playerRole = playerRole;
-        if (newPlayer.teamReference != selectedPlayer.teamReference ||
-                newPlayer.playerRole != selectedPlayer.playerRole) {
-            const uri = `/teams-api/players/${selectedPlayer.reference}`;
-            updatePlayerData(uri, newPlayer)
-                .then((status) => {
-                    console.log("http status: ", status);
-                    if (status === 204) {
-                        console.log("newPlayer", newPlayer);
-                        const newPlayers = [...players];
-                        newPlayers[playerIndex] = newPlayer;
-                        console.log(newPlayers);
-                        setPlayers(newPlayers);
-                    }
-                });
+        if (newPlayer.teamReference !== selectedPlayer.teamReference ||
+                newPlayer.playerRole !== selectedPlayer.playerRole) {
+            savePlayer(newPlayer, playerIndex, playerState);
+            onDialogClose();
         }
         if (haveMemberPropertiesChanged(inputs)) {
             newPlayer.firstName = inputs[0].value;
@@ -114,14 +89,15 @@ export const PlayerForm = withStyles(styles)(({classes, ...props}) => {
                                                onSetFieldValue={onSetFieldValue}/>
                         ))}
                         <TeamSelect teamReference={teamReference} onChange={e => setTeamReference(e.target.value)}/>
-                        <Roles playerRole={playerRole} onRoleChange={e => setPlayerRole(e.target.value)}/>
+                        <PlayerRole playerRole={playerRole} onRoleChange={e => setPlayerRole(e.target.value)}/>
                     </Grid>
                     <Grid container spacing={4} className={classes.container} justifyContent={"flex-start"}
                           direction={"row"}>
                         <Grid key={'PlayerUpdateActions'} item>
-                            <PlayerUpdateActions onUndo={onUndo}
-                                                 onSave={onSave}
-                                                 disabled={false}/>
+                            <FormUpdateActions onCancel={onDialogClose}
+                                               onSave={onSave}
+                                               onUndo={onUndo}
+                                               disabled={false}/>
                         </Grid>
                     </Grid>
                 </>

@@ -1,45 +1,75 @@
 import {withStyles} from "@material-ui/core/styles";
-import {useContext} from "react";
 import {PlayerListContext} from "./PlayerListContext";
-import {List, ListItem, ListItemText} from "@material-ui/core";
+import {Paper, Table, TableBody, TableCell, TableHead, TableRow} from "@material-ui/core";
+import {Roles} from "./Roles";
 
-const styles = theme => ({});
+const styles = theme => ({
+    root: {margin: theme.spacing(2)},
+    tableRow: {
+        "&.Mui-selected, &.Mui-selected:hover": {
+            backgroundColor: theme.palette.primary.main,
+            "& > .MuiTableCell-root": {
+                color: "white"
+            }
+        }
+    }
+});
 
 const PlayerList = withStyles(styles)(({classes, ...props}) => {
     const {selectedPlayer, onPlayerSelect} = props;
-    const {teams, playerState} = useContext(PlayerListContext);
 
-    const [players, setPlayers] = playerState;
-
-    const getTeam = (teamReference) => {
+    const getTeam = (teams, teamReference) => {
         let team = null;
         if (teamReference) {
             team = teams.find(team => team.reference === teamReference);
         }
-        console.log("ref: ", teamReference, " team: ", team);
-        return (team ? team.name : 'No teamplayer yet');
+        return (team ? `${team.name} ${team.description}` : 'No teamplayer yet');
     }
 
+    const roleOptions = Roles();
+    const findRoleOptionById = (id) => {
+        return roleOptions.find(it => it.id === id) || roleOptions[0];
+    }
+
+
     return (
-        <List>
-            {selectedPlayer && players && players.map((it, index) => (
-                <ListItem
-                    key={index}
-                    button
-                    dense
-                    selected={it.reference === selectedPlayer.reference}
-                    onClick={() => onPlayerSelect(index)}
-                >
-                    <ListItemText
-                        primary={`${it.firstName} ${it.lastName}`}
-                        secondary={getTeam(it.teamReference)}
-                        primaryTypographyProps={{
-                            color: it.selected ? 'primary' : undefined
-                        }}
-                    />
-                </ListItem>
-            ))}
-        </List>
+        <>
+            {selectedPlayer && (
+                <PlayerListContext.Consumer>
+                    {({playerState: [players], teamState: [teams]}) => (
+                        <Paper className={classes.root}>
+                            <Table style={{width: '100%'}}>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell>Team</TableCell>
+                                        <TableCell align="right">Role</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {players.map((it, index) => {
+                                        return (
+                                            <TableRow key={index}
+                                                      onClick={() => onPlayerSelect(index)}
+                                                      selected={it.reference === selectedPlayer.reference}
+                                                      hover={true}
+                                                      className={classes.tableRow}
+                                            >
+                                                <TableCell component="th" scope="row">
+                                                    {`${it.firstName} ${it.lastName}`}
+                                                </TableCell>
+                                                <TableCell>{getTeam(teams, it.teamReference)}</TableCell>
+                                                <TableCell align="right">{findRoleOptionById(it.playerRole).label}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </Paper>
+                    )}
+                </PlayerListContext.Consumer>
+            )}
+        </>
     );
 });
 

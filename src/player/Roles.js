@@ -1,7 +1,4 @@
-import {FormControl, Grid, InputLabel, MenuItem, Select} from "@material-ui/core";
-import {useEffect} from "react";
-
-export const Roles = ({playerRole, onRoleChange}) => {
+export const Roles = () => {
 
     const roleOptions = [
         {label: 'Onbekend', id: 'UNKNOWN', selected: true},
@@ -11,29 +8,5 @@ export const Roles = ({playerRole, onRoleChange}) => {
         {label: 'Aanvaller', id: 'STRIKER'},
     ];
 
-    useEffect(() => {
-
-    }, [playerRole]);
-
-    return (
-        <Grid key={"role"} item>
-            <FormControl>
-                <InputLabel htmlFor="roles">Role</InputLabel>
-                <Select
-                    value={playerRole}
-                    onChange={e => onRoleChange(e)}
-                    inputProps={{
-                        name: 'roles',
-                        id: 'roles'
-                    }}
-                >
-                    {roleOptions.map(it => (
-                        <MenuItem key={it.id} value={it.id}>
-                            {it.label}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-        </Grid>
-    );
+    return roleOptions;
 }

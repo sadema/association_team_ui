@@ -1,4 +1,4 @@
 import React from "react";
 
-export const PlayerListContext = React.createContext({teams: [], playerState: null});
+export const PlayerListContext = React.createContext({teamState: null, playerState: null});
 

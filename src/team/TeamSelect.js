@@ -3,13 +3,14 @@ import {FormControl, Grid, InputLabel, MenuItem, Select} from "@material-ui/core
 import {PlayerListContext} from "../player/PlayerListContext";
 
 export const TeamSelect = ({teamReference, onChange}) => {
-    const {teams} = useContext(PlayerListContext);
+    const {teamState} = useContext(PlayerListContext);
+
+    const [teams, setTeams] = teamState;
 
     const [teamOptions, setTeamOptions] = useState(null);
 
     useEffect(() => {
-        console.log('Aantal teams: ', teams.length);
-        if (teams.length > 0) {
+        if (teams) {
             setTeamOptions(teams.reduce((newTeamSelects, it) => {
                 console.log("it: ", it);
                 newTeamSelects.push({

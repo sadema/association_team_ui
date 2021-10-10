@@ -86,7 +86,7 @@ export const NavBar = withStyles(styles)(({classes}) => {
     return (
         <Router>
             <div className={classes.root}>
-                <PlayerListContext.Provider value={{teams: useTeamData(), playerState: usePlayerData()}}>
+                <PlayerListContext.Provider value={{teamState: useTeamData(), playerState: usePlayerData()}}>
                     <Route
                         exact
                         path="/"
